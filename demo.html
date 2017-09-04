@@ -1,0 +1,138 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>
+
+    </script>
+</head>
+<body>
+  <div>
+  </div>
+  <div>
+  </div>
+  <div>
+  </div>
+  <div>
+  </div>
+  <script>
+
+      function myjquery(selector){
+          if(typeof selector=="string"){
+              var eles=document.querySelectorAll(selector);
+
+              for(var i=0;i<eles.length;i++){
+                  this[i]=eles[i];
+              }
+              this.length=eles.length;
+          }else if(typeof selector=="object" && selector.nodeType==1){
+
+             this[0]=selector;
+             this.length=1;
+          }
+
+      }
+
+      myjquery.prototype={
+
+          each:function (callback) {
+                for(var i=0;i<this.length;i++){
+                    callback(i,this[i]);
+                }
+          },
+
+          css:function(paramsObj){
+                this.each(function(index,obj){
+                        for(var i in paramsObj){
+                            obj.style[i]=paramsObj[i];
+                        }
+                })
+              return this;
+
+          },
+          click:function(callback){
+
+                this.each(function(index,obj){
+                    obj.onclick=function(){
+                        callback.call(obj)
+                    }
+                })
+              return this;
+          },
+
+          animate:function(attr,end,type){
+              var that=this;
+
+              var type=type||"ease";
+              this.each(function(index,obj){
+                    if(type=="ease"){
+                      that.ease(obj,attr,end);
+                    }
+              })
+
+          },
+
+          ease:function(obj,attr,end){
+
+              var t= setInterval(function(){
+                  var start=parseInt(getComputedStyle(obj,null)[attr])?parseInt(getComputedStyle(obj,null)[attr]):0;
+                  var speed=(end-start)/8;
+
+                  speed=speed<1?Math.ceil(speed):speed;
+
+                  speed=speed<0&&speed>-1?Math.floor(speed):speed;
+
+
+                  var val=start+speed
+                  if(val==end){
+                      clearInterval(t);
+                  }else{
+                      obj.style[attr]=val+"px";
+                  }
+
+              },50)
+          }
+
+      }
+
+
+      function $(selector){
+
+          return new myjquery(selector);
+      }
+
+
+
+      /*
+      *
+      *    jquery
+      *
+      *
+      * */
+
+
+
+
+
+      $("div").css({
+          width:"200px",height:"200px",border:"1px solid red"
+      }).click(function(){
+            $(this).animate("width",400);
+      })
+
+
+
+
+//      $("div").css({
+//          width:200,height:200,border:"1px solid red"
+//      }).click(function(){
+//          $(this).animate({width:500})
+//      })
+
+  </script>
+</body>
+</html>
