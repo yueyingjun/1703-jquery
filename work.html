@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <script>  </script>
+</head>
+<body>
+<div class="one"></div>
+<div></div>
+<div></div>
+<span>www</span>
+<span>wwww</span>
+<em></em>
+<em></em>
+<em></em>
+
+</body>
+
+</html>
+<script>
+
+    $("#one").click(function(){
+        alert(1);
+    })
+
+
+    "#one"  id是one的元素
+
+    function aa(selector){
+
+           if(typeof selector=="string") {
+
+               var reg=/^<([a-z]\w{0,10})>$/;
+
+               if(reg.test(selector)){
+                   var tag=(reg.exec(selector)[1]);
+                   this[0]=document.createElement(tag);
+                   this.length=1;
+               }else {
+                   var alls = document.querySelectorAll(selector);
+
+                   for (var i = 0; i < alls.length; i++) {
+                       this[i] = alls[i]
+                   }
+                   this.length = alls.length;
+               }
+           }else if(typeof  selector=="function"){
+               document.addEventListener("DOMContentLoaded",function(){
+                   selector();
+               })
+           }else if(selector==undefined){
+               return this;
+           }else if(typeof selector=="object" && selector.nodeType==1){
+
+               this[0]=selector;
+               this.length=1;
+           }
+    }
+
+
+    aa.prototype={
+           h:function(val){
+              for(var i=0;i<this.length;i++){
+                  this[i].innerHTML=val;
+              }
+              return this;
+           },
+           css:function(obj){
+
+              for(var i=0;i<this.length;i++){
+                    for(var j in obj){
+                        this[i].style[j]=obj[j];
+                    }
+              }
+              return this;
+
+           },
+
+          appendTo:function(selector){
+                var eles=document.querySelectorAll(selector);
+                var obj=this[0];
+                for(var i=0;i<eles.length;i++){
+                    var clone=obj.cloneNode(true);
+                    this[i]=clone;
+                    eles[i].appendChild(clone)
+                }
+                this.length=eles.length;
+
+              return this;
+
+          },
+        each:function(callback){
+            for(var i=0;i<this.length;i++){
+                callback(i,this[i]);
+            }
+
+        },
+        click:function(callback){
+            this.each(function(index,obj){
+                obj.onclick=function(){
+                    callback.call(obj)
+                }
+            })
+            return this;
+        },
+
+        mouseout:function(callback){
+            this.each(function(index,obj){
+                obj.onmouseout=function(){
+                    callback.call(obj)
+                }
+            })
+            return this;
+        },
+        attr:function(name,val){
+            this.each(function(index,obj){
+                obj.setAttribute(name,val);
+            })
+        },
+
+        removeAttr:function(name){
+            this.each(function(index,obj){
+                obj.removeAttribute(name);
+            })
+        }
+
+    }
+
+
+    //请用原生代码实现这种调用方式(类似jquery语法)  $("div").css().html().click
+
+      function $(selector){
+        return new aa(selector);
+      }
+
+
+      $("div").h("链接").click(function(){
+          $(this).attr("href","http://www.baidu.com");
+
+      }).mouseout(function(){
+          $(this).css({
+              background:"red"
+          })
+      })
+
+</script>
